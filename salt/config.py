@@ -263,7 +263,7 @@ DEFAULT_MINION_OPTS = {
     'state_auto_order': True,
     'state_events': False,
     'highstate_log': False,
-    'highstate_log_dir': '/var/log/salt/highstate',    
+    'highstate_log_dir': '/var/log/salt/highstate',
     'acceptance_wait_time': 10,
     'acceptance_wait_time_max': 0,
     'rejected_retry': False,
