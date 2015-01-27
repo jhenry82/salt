@@ -29,6 +29,9 @@ import salt.minion
 import salt.pillar
 import salt.fileclient
 import salt.utils.event
+
+from salt.highstate_log import HighStateLog
+
 import salt.syspaths as syspaths
 from salt.utils import context, immutabletypes
 from salt._compat import string_types
@@ -2827,7 +2830,18 @@ class BaseHighState(object):
             if os.path.isfile(cfn):
                 with salt.utils.fopen(cfn, 'rb') as fp_:
                     high = self.serial.load(fp_)
-                    return self.state.call_high(high)
+
+                    if self.opts['highstate_log']:
+                        log = HighStateLog(self.opts['highstate_log_dir'])
+                        highstate_log_entry = log.new_entry()
+                        highstate_log_entry.write_highstate(high)
+
+                    result = self.state.call_high(high)
+
+                    if self.opts['highstate_log']:
+                        highstate_log_entry.write_result(result)
+
+                    return result
         # File exists so continue
         err = []
         try:
@@ -2880,7 +2894,18 @@ class BaseHighState(object):
             log.error(msg.format(cfn))
 
         os.umask(cumask)
-        return self.state.call_high(high)
+
+        if self.opts['highstate_log']:
+            log = HighStateLog(self.opts['highstate_log_dir'])
+            highstate_log_entry = log.new_entry()
+            highstate_log_entry.write_highstate(high)
+
+        result = self.state.call_high(high)
+
+        if self.opts['highstate_log']:
+            highstate_log_entry.write_result(result)
+
+        return result
 
     def compile_highstate(self):
         '''

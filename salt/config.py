@@ -118,6 +118,8 @@ VALID_OPTS = {
     'state_output': str,
     'state_auto_order': bool,
     'state_events': bool,
+    'highstate_log': bool,
+    'highstate_log_dir': str,
     'acceptance_wait_time': float,
     'acceptance_wait_time_max': float,
     'rejected_retry': bool,
@@ -366,6 +368,8 @@ DEFAULT_MINION_OPTS = {
     'state_auto_order': True,
     'state_events': False,
     'state_aggregate': False,
+    'highstate_log': False,
+    'highstate_log_dir': '/var/log/salt/highstate',
     'acceptance_wait_time': 10,
     'acceptance_wait_time_max': 0,
     'rejected_retry': False,
@@ -972,7 +976,7 @@ def syndic_config(master_config_path,
     # Prepend root_dir to other paths
     prepend_root_dirs = [
         'pki_dir', 'cachedir', 'pidfile', 'sock_dir', 'extension_modules',
-        'autosign_file', 'autoreject_file', 'token_dir'
+        'autosign_file', 'autoreject_file', 'token_dir', 'highstate_log_dir'
     ]
     for config_key in ('log_file', 'key_logfile'):
         if urlparse.urlparse(opts.get(config_key, '')).scheme == '':
